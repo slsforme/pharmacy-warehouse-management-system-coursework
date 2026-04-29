@@ -1,0 +1,34 @@
+[project]
+name = "pharmacy-management"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "slsforme",email = "27ofdecember@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12, <4.0"
+dependencies = [
+    "django (>=6.0.4,<7.0.0)",
+    "python-decouple (>=3.8,<4.0)",
+    "djangorestframework (>=3.17.1,<4.0.0)",
+    "psycopg2-binary (>=2.9.12,<3.0.0)",
+    "django-filter (>=25.2,<26.0)",
+    "drf-spectacular (>=0.29.0,<0.30.0)",
+    "django-cors-headers (>=4.9.0,<5.0.0)",
+    "django-debug-toolbar (>=6.3.0,<7.0.0)",
+    "mawo-pymorphy3 (>=1.0.4,<2.0.0)",
+    "deep-translator (>=1.11.4,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest-django = "^4.12.0"
+pytest-cov = "^7.1.0"
+ruff = "^0.15.12"
+ipython = "^9.13.0"
+factory-boy = "^3.3.3"
+
