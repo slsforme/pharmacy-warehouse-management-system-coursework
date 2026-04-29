@@ -11,10 +11,16 @@ from .regex import *  # noqa
 class ValidatorType(Enum):
     STRING_WITH_NUMBERS = "string_with_numbers"
     CYRILLIC_LATIN_ONLY = "cyrillic_latin_only"
+    LATIN_ONLY = "latin_only"
     NUMERIC = "numeric"
     MIN_LENGTH = "min_length"
     MAX_LENGTH = "max_length"
     PHONE_NUMBER = "phone_number"
+    INN = "inn"
+    OKTMO = "oktmo"
+    OGRN = "ogrn"
+    KPP = "kpp"
+    LICENSE = "license"
 
 _VALIDATOR_CONFIG = {
     ValidatorType.STRING_WITH_NUMBERS: {
@@ -27,15 +33,45 @@ _VALIDATOR_CONFIG = {
         "params": {"regex": ONLY_SYMBOLS_STRING_REGEX},
         "message": "{description} должен состоять только из букв и пробелов.",
     },
+    ValidatorType.LATIN_ONLY: {
+        "class": RegexValidator,
+        "params": {"regex": ONLY_LATIN_STRING_REGEX},
+        "message": "{description} должен состоять только из латиницы и пробелов.",
+    },
     ValidatorType.PHONE_NUMBER: {
         "class": RegexValidator,
         "params": {"regex": PHONE_NUMBER_REGEX},
-        "message": "{description} может состоять из цифр, скобок и пробелов",
+        "message": "{description} может состоять из цифр, скобок и пробелов.",
     },
     ValidatorType.NUMERIC: {
         "class": RegexValidator,
         "params": {"regex": ONLY_NUMBERS_REGEX},
         "message": "{description} должен состоять только из цифр.",
+    },
+    ValidatorType.INN: {
+        "class": RegexValidator,
+        "params": {"regex": INN_REGEX},
+        "message": "{description} должен содержать 10 или 12 цифр.",
+    },
+    ValidatorType.OKTMO: {
+        "class": RegexValidator,
+        "params": {"regex": OKTMO_REGEX},
+        "message": "{description} должен содержать 8 или 11 цифр.",
+    },
+    ValidatorType.KPP: {
+        "class": RegexValidator,
+        "params": {"regex": KPP_REGEX},
+        "message": "{description} должен содержать 9 цифр.",
+    },
+    ValidatorType.OGRN: {
+        "class": RegexValidator,
+        "params": {"regex": OGRN_REGEX},
+        "message": "{description} должен содержать 13 или 15 цифр.",
+    },
+    ValidatorType.LICENSE: {
+        "class": RegexValidator,
+        "params": {"regex": LICENSE_REGEX},
+        "message": "{description} должен иметь формат 'ЛО-77-02-123456'",
     },
     ValidatorType.MIN_LENGTH: {
         "class": MinLengthValidator,
