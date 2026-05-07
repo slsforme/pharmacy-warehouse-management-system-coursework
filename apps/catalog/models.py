@@ -55,8 +55,8 @@ class Manufacturer(BaseModel):
         },
         validators=[
             create_validator(ValidatorType.STRING_WITH_NUMBERS, name_description_text),
-            create_validator(ValidatorType.MIN_LENGTH, name_description_text, limit_value=name_max_length),
-            create_validator(ValidatorType.MAX_LENGTH, name_description_text, limit_value=name_and_country_min_length)
+            create_validator(ValidatorType.MIN_LENGTH, name_description_text, limit_value=name_and_country_min_length),
+            create_validator(ValidatorType.MAX_LENGTH, name_description_text, limit_value=name_max_length)
         ],
     )
     
@@ -72,8 +72,8 @@ class Manufacturer(BaseModel):
         },
         validators=[
             create_validator(ValidatorType.CYRILLIC_LATIN_ONLY, country_description_text),
-            create_validator(ValidatorType.MIN_LENGTH, country_description_text, limit_value=country_max_length),
-            create_validator(ValidatorType.MAX_LENGTH, country_description_text, limit_value=name_and_country_min_length)
+            create_validator(ValidatorType.MIN_LENGTH, country_description_text, limit_value=name_and_country_min_length),
+            create_validator(ValidatorType.MAX_LENGTH, country_description_text, limit_value=country_max_length)
         ],
     )
 
@@ -261,7 +261,6 @@ class Drug(BaseModel):
 
     name_text = "Препарат"
 
-
     name = models.CharField(
         verbose_name=name_text,
         null=False,
@@ -275,8 +274,8 @@ class Drug(BaseModel):
         },
         validators=[
             create_validator(ValidatorType.STRING_WITH_NUMBERS, name_text),
-            create_validator(ValidatorType.MIN_LENGTH, name_text, limit_value=name_max_length),
-            create_validator(ValidatorType.MAX_LENGTH, name_text, limit_value=name_min_length)
+            create_validator(ValidatorType.MIN_LENGTH, name_text, limit_value=name_min_length),
+            create_validator(ValidatorType.MAX_LENGTH, name_text, limit_value=name_max_length)
         ],
     )
 
@@ -286,5 +285,13 @@ class Drug(BaseModel):
         verbose_name="Произодитель",
         null=True,
         blank=False
+    )
+
+    group = models.ForeignKey(
+        to="DrugGroup",
+        on_delete=models.PROTECT,
+        verbose_name="Группа препаратов",
+        null=True,
+        blank=False,
     )
 

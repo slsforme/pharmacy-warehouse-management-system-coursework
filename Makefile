@@ -3,11 +3,17 @@
 run:
 	poetry run python manage.py runserver
 
+makemigrations:
+	poetry run python manage.py makemigrations
+
 migrate:
 	poetry run python manage.py migrate
 
-makemigrations:
-	poetry run python manage.py makemigrations
+check:
+	poetry run python manage.py check
+
+check-db:
+	poetry run python manage.py check --database default
 
 shell:
 	poetry run python manage.py shell
@@ -23,7 +29,3 @@ lint:
 
 fix:
 	poetry run ruff check . --fix
-
-
-
-

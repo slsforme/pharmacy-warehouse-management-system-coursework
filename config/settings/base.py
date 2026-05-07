@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "corsheaders",
     # local
+    "apps.users",
     "apps.catalog",
     "apps.inventory",
     "apps.reports",
@@ -74,7 +75,7 @@ DATABASES = {
     }
 }
 
-# passwords
+# passwords & auth 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -82,6 +83,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+AUTH_USER_MODEL = "users.User"
 
 # localization
 LANGUAGE_CODE = "ru-ru"
@@ -153,6 +155,11 @@ LOGGING = {
         "django": {
             "handlers": ["console"],
             "level": config("DJANGO_LOG_LEVEL", default="INFO"),
+            "propagate": False,
+        },
+        "mawo_pymorphy3": {
+            "handlers": [],
+            "level": "CRITICAL",
             "propagate": False,
         },
     },
