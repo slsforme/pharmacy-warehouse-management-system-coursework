@@ -1,15 +1,15 @@
+import logging
 import re
 import uuid
-import logging
 
-from django.db import models
 from deep_translator import GoogleTranslator
+from django.db import models
 from mawo_pymorphy3 import create_analyzer
 
 VERBOSE_NAME_OVERRIDES: dict[str, tuple[str, str]] = {
     "DrugGroup": ("группа препаратов", "группы препаратов"),
-    "Sale":      ("продажа",           "продажи"),
-    "Stock":     ("остаток на складе", "остатки на складе"),
+    "Sale": ("продажа", "продажи"),
+    "Stock": ("остаток на складе", "остатки на складе"),
 }
 
 logging.getLogger("mawo_pymorphy3").setLevel(logging.CRITICAL)

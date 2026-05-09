@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import DrugGroup, Drug, Manufacturer, Supplier
+
+from .models import Drug, DrugGroup, Manufacturer, Supplier
 
 
 @admin.register(DrugGroup)
@@ -27,4 +28,4 @@ class DrugAdmin(admin.ModelAdmin):
     list_display = ["name", "group", "manufacturer"]
     search_fields = ["name"]
     list_filter = ["group", "manufacturer"]
-    list_select_related = ["group", "manufacturer"] 
+    list_select_related = ["group", "manufacturer"]

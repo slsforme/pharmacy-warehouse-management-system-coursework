@@ -1,12 +1,24 @@
 from enum import Enum
 
 from django.core.validators import (
-    RegexValidator,
+    MaxLengthValidator,
     MinLengthValidator,
-    MaxLengthValidator
+    RegexValidator,
 )
 
-from .regex import *  # noqa
+from .regex import (
+    INN_REGEX,
+    KPP_REGEX,
+    LICENSE_REGEX,
+    OGRN_REGEX,
+    OKTMO_REGEX,
+    ONLY_CYRILLIC_LATIN_SPECIAL_SYMBOLS_AND_NUMBERS_STRING_REGEX,
+    ONLY_LATIN_STRING_REGEX,
+    ONLY_NUMBERS_REGEX,
+    ONLY_SYMBOLS_STRING_REGEX,
+    PHONE_NUMBER_REGEX,
+)
+
 
 class ValidatorType(Enum):
     STRING_WITH_NUMBERS = "string_with_numbers"
@@ -22,10 +34,13 @@ class ValidatorType(Enum):
     KPP = "kpp"
     LICENSE = "license"
 
+
 _VALIDATOR_CONFIG = {
     ValidatorType.STRING_WITH_NUMBERS: {
         "class": RegexValidator,
-        "params": {"regex": ONLY_CYRILLIC_LATIN_SPECIAL_SYMBOLS_AND_NUMBERS_STRING_REGEX},
+        "params": {
+            "regex": ONLY_CYRILLIC_LATIN_SPECIAL_SYMBOLS_AND_NUMBERS_STRING_REGEX
+        },
         "message": "{description} должен состоять только из букв, цифр, пробелов и спецсимволов.",
     },
     ValidatorType.CYRILLIC_LATIN_ONLY: {
@@ -75,7 +90,7 @@ _VALIDATOR_CONFIG = {
     },
     ValidatorType.MIN_LENGTH: {
         "class": MinLengthValidator,
-        "params": {}, 
+        "params": {},
         "message": "{description} должен иметь минимальную длину {limit_value} симв.",
     },
     ValidatorType.MAX_LENGTH: {
@@ -85,7 +100,8 @@ _VALIDATOR_CONFIG = {
     },
 }
 
-def create_validator(validator_type: ValidatorType, description: str , **kwargs):
+
+def create_validator(validator_type: ValidatorType, description: str, **kwargs):
     config = _VALIDATOR_CONFIG[validator_type]
     validator_class = config["class"]
     params = {**config["params"], **kwargs}

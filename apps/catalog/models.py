@@ -1,7 +1,8 @@
 from django.db import models
 
 from common.models import BaseModel
-from common.validators import *  # noqa
+from common.validators import *  # noqa: F403,F405
+
 
 class DrugGroup(BaseModel):
     name_max_length: int = 3
@@ -12,7 +13,7 @@ class DrugGroup(BaseModel):
         verbose_name="Наименование",
         null=False,
         blank=False,
-        unique=True, 
+        unique=False,
         editable=True,
         error_messages={
             "unique": f"Такое {name_description_text.lower()} уже существует в системе",
@@ -20,8 +21,16 @@ class DrugGroup(BaseModel):
         },
         validators=[
             create_validator(ValidatorType.STRING_WITH_NUMBERS, name_description_text),
-            create_validator(ValidatorType.MIN_LENGTH, name_description_text, limit_value=name_max_length),
-            create_validator(ValidatorType.MAX_LENGTH, name_description_text, limit_value=name_min_length)
+            create_validator(
+                ValidatorType.MIN_LENGTH,
+                name_description_text,
+                limit_value=name_max_length,
+            ),
+            create_validator(
+                ValidatorType.MAX_LENGTH,
+                name_description_text,
+                limit_value=name_min_length,
+            ),
         ],
     )
 
@@ -47,7 +56,7 @@ class Manufacturer(BaseModel):
         verbose_name="Название",
         null=False,
         blank=False,
-        unique=True, 
+        unique=False,
         editable=True,
         error_messages={
             "unique": f"Такое {name_description_text.lower()} уже существует в системе.",
@@ -55,25 +64,43 @@ class Manufacturer(BaseModel):
         },
         validators=[
             create_validator(ValidatorType.STRING_WITH_NUMBERS, name_description_text),
-            create_validator(ValidatorType.MIN_LENGTH, name_description_text, limit_value=name_and_country_min_length),
-            create_validator(ValidatorType.MAX_LENGTH, name_description_text, limit_value=name_max_length)
+            create_validator(
+                ValidatorType.MIN_LENGTH,
+                name_description_text,
+                limit_value=name_and_country_min_length,
+            ),
+            create_validator(
+                ValidatorType.MAX_LENGTH,
+                name_description_text,
+                limit_value=name_max_length,
+            ),
         ],
     )
-    
+
     country = models.CharField(
         verbose_name="Страна",
         null=False,
         blank=False,
-        unique=True, 
+        unique=False,
         editable=True,
         error_messages={
             "unique": f"Такая {country_description_text.lower()} уже связана с другим производителем.",
             "required": "Это поле обязательно",
         },
         validators=[
-            create_validator(ValidatorType.CYRILLIC_LATIN_ONLY, country_description_text),
-            create_validator(ValidatorType.MIN_LENGTH, country_description_text, limit_value=name_and_country_min_length),
-            create_validator(ValidatorType.MAX_LENGTH, country_description_text, limit_value=country_max_length)
+            create_validator(
+                ValidatorType.CYRILLIC_LATIN_ONLY, country_description_text
+            ),
+            create_validator(
+                ValidatorType.MIN_LENGTH,
+                country_description_text,
+                limit_value=name_and_country_min_length,
+            ),
+            create_validator(
+                ValidatorType.MAX_LENGTH,
+                country_description_text,
+                limit_value=country_max_length,
+            ),
         ],
     )
 
@@ -106,14 +133,14 @@ class Manufacturer(BaseModel):
         verbose_name="Дополнительная информация",
         blank=True,
         default="",
-        editable=True,   
+        editable=True,
     )
 
 
 class Supplier(BaseModel):
     name_min_length: int = 3
     name_max_length: int = 255
-    
+
     name_text: str = "Название поставщика"
     phone_number_text: str = "Номер телефона"
     email_text: str = "Адрес электронной почты"
@@ -128,7 +155,7 @@ class Supplier(BaseModel):
         verbose_name=name_text,
         null=False,
         blank=False,
-        unique=True, 
+        unique=False,
         editable=True,
         default="...",
         error_messages={
@@ -137,8 +164,12 @@ class Supplier(BaseModel):
         },
         validators=[
             create_validator(ValidatorType.STRING_WITH_NUMBERS, name_text),
-            create_validator(ValidatorType.MIN_LENGTH, name_text, limit_value=name_max_length),
-            create_validator(ValidatorType.MAX_LENGTH, name_text, limit_value=name_min_length)
+            create_validator(
+                ValidatorType.MIN_LENGTH, name_text, limit_value=name_min_length
+            ),
+            create_validator(
+                ValidatorType.MAX_LENGTH, name_text, limit_value=name_max_length
+            ),
         ],
     )
 
@@ -147,16 +178,20 @@ class Supplier(BaseModel):
         null=True,
         blank=True,
         default="",
-        unique=True, 
+        unique=False,
         editable=True,
         error_messages={
             "unique": f"Такое {name_text.lower()} уже существует в системе.",
             "required": "Это поле обязательно",
         },
         validators=[
-            create_validator(ValidatorType.LATIN_ONLY, name_text),
-            create_validator(ValidatorType.MIN_LENGTH, name_text, limit_value=name_max_length),
-            create_validator(ValidatorType.MAX_LENGTH, name_text, limit_value=name_min_length)
+            create_validator(ValidatorType.STRING_WITH_NUMBERS, name_text),
+            create_validator(
+                ValidatorType.MIN_LENGTH, name_text, limit_value=name_min_length
+            ),
+            create_validator(
+                ValidatorType.MAX_LENGTH, name_text, limit_value=name_max_length
+            ),
         ],
     )
 
@@ -171,7 +206,7 @@ class Supplier(BaseModel):
         unique=True,
         null=True,
         blank=False,
-        validators=[create_validator(ValidatorType.INN, inn_text)]
+        validators=[create_validator(ValidatorType.INN, inn_text)],
     )
 
     kpp = models.CharField(
@@ -179,7 +214,7 @@ class Supplier(BaseModel):
         unique=True,
         blank=True,
         null=True,
-        validators=[create_validator(ValidatorType.KPP, kpp_text)]
+        validators=[create_validator(ValidatorType.KPP, kpp_text)],
     )
 
     ogrn = models.CharField(
@@ -187,14 +222,14 @@ class Supplier(BaseModel):
         unique=True,
         null=True,
         blank=False,
-        validators=[create_validator(ValidatorType.OGRN, ogrn_text)]
+        validators=[create_validator(ValidatorType.OGRN, ogrn_text)],
     )
 
     oktmo = models.CharField(
         verbose_name=oktmo_text,
         unique=True,
         blank=False,
-        validators=[create_validator(ValidatorType.OKTMO, oktmo_text)]
+        validators=[create_validator(ValidatorType.OKTMO, oktmo_text)],
     )
 
     pharma_license_number = models.CharField(
@@ -202,7 +237,7 @@ class Supplier(BaseModel):
         null=True,
         unique=True,
         blank=False,
-        validators=[create_validator(ValidatorType.LICENSE, license_name_text)]
+        validators=[create_validator(ValidatorType.LICENSE, license_name_text)],
     )
 
     pharma_license_date = models.DateField(
@@ -217,10 +252,7 @@ class Supplier(BaseModel):
         blank=False,
     )
 
-    legal_address = models.TextField(
-        verbose_name="Юридический адрес",
-        blank=True
-    )
+    legal_address = models.TextField(verbose_name="Юридический адрес", blank=True)
 
     phone_number = models.CharField(
         verbose_name=phone_number_text,
@@ -250,10 +282,12 @@ class Supplier(BaseModel):
     @property
     def is_license_active(self):
         from django.utils import timezone
+
         if self.pharma_license_expiry is None:
             return True
-        
+
         return self.pharma_license_expiry >= timezone.now().date()
+
 
 class Drug(BaseModel):
     name_min_length: int = 3
@@ -265,7 +299,7 @@ class Drug(BaseModel):
         verbose_name=name_text,
         null=False,
         blank=False,
-        unique=True, 
+        unique=False,
         editable=True,
         default="...",
         error_messages={
@@ -274,8 +308,12 @@ class Drug(BaseModel):
         },
         validators=[
             create_validator(ValidatorType.STRING_WITH_NUMBERS, name_text),
-            create_validator(ValidatorType.MIN_LENGTH, name_text, limit_value=name_min_length),
-            create_validator(ValidatorType.MAX_LENGTH, name_text, limit_value=name_max_length)
+            create_validator(
+                ValidatorType.MIN_LENGTH, name_text, limit_value=name_min_length
+            ),
+            create_validator(
+                ValidatorType.MAX_LENGTH, name_text, limit_value=name_max_length
+            ),
         ],
     )
 
@@ -284,7 +322,7 @@ class Drug(BaseModel):
         on_delete=models.PROTECT,
         verbose_name="Произодитель",
         null=True,
-        blank=False
+        blank=False,
     )
 
     group = models.ForeignKey(
@@ -294,4 +332,3 @@ class Drug(BaseModel):
         null=True,
         blank=False,
     )
-

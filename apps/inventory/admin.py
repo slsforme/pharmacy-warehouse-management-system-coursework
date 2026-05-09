@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import Arrival, ArrivalItem, Stock
 
 
@@ -13,7 +14,7 @@ class ArrivalAdmin(admin.ModelAdmin):
     list_display = ["document_number", "supplier", "document_date", "created_at"]
     search_fields = ["document_number"]
     list_filter = ["supplier", "document_date"]
-    inlines = [ArrivalItemInline]   # позиции прямо внутри накладной
+    inlines = [ArrivalItemInline]  # позиции прямо внутри накладной
 
 
 @admin.register(Stock)
