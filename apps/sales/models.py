@@ -1,13 +1,16 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from common.models import BaseModel
 
 
 class Sale(BaseModel):
     cashier = models.ForeignKey(
-        to="users.User",  # ← было settings.AUTH_USER_MODEL
+        to="users.User",
         on_delete=models.PROTECT,
         verbose_name="Кассир",
+        null=False,
+        blank=False
     )
 
     sold_at = models.DateTimeField(
@@ -19,8 +22,11 @@ class Sale(BaseModel):
     note = models.TextField(
         verbose_name="Примечание",
         blank=True,
+        editable=True,
         default="",
     )
+
+    history = HistoricalRecords()
 
     @property
     def total(self) -> float:
@@ -34,21 +40,29 @@ class SaleItem(BaseModel):
         verbose_name="Продажа",
         related_name="items",
     )
+    
     drug = models.ForeignKey(
         to="catalog.Drug",
         on_delete=models.PROTECT,
         verbose_name="Препарат",
     )
+
     quantity = models.DecimalField(
         verbose_name="Количество",
         max_digits=10,
         decimal_places=2,
     )
+
     price = models.DecimalField(
         verbose_name="Цена продажи",
         max_digits=10,
         decimal_places=2,
     )
+
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f"Продажа {self.drug.name}"
 
     @property
     def total(self) -> float:

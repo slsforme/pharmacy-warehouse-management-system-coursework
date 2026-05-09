@@ -1,10 +1,14 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from common.models import BaseModel
-from common.validators import *  # noqa
+from common.validators import *
 
 
 class Arrival(BaseModel):
+    doc_min_length: int = 3
+    doc_max_length: int = 100
+
     supplier = models.ForeignKey(
         to="catalog.Supplier",
         on_delete=models.PROTECT,
@@ -21,7 +25,19 @@ class Arrival(BaseModel):
     )
 
     document_number = models.CharField(
-        verbose_name="Номер документа", unique=False, null=False, blank=False
+        verbose_name="Номер документа", 
+        unique=False, 
+        null=False, 
+        blank=False,
+        validators=[
+            create_validator(ValidatorType.STRING_WITH_NUMBERS, "Номер документа"),
+            create_validator(
+                ValidatorType.MIN_LENGTH, "Номер документа", limit_value=doc_min_length
+            ),
+            create_validator(
+                ValidatorType.MAX_LENGTH, "Номер документа", limit_value=doc_max_length
+            ),
+        ],
     )
 
     document_date = models.DateField(
@@ -36,6 +52,9 @@ class Arrival(BaseModel):
         blank=True,
         default="",
     )
+
+    def __str__(self):
+        return f"Поставка по документу № {self.document_number}"
 
 
 class ArrivalItem(BaseModel):
@@ -77,7 +96,13 @@ class ArrivalItem(BaseModel):
         verbose_name="Серия препарата",
         null=False,
         blank=False,
+        
     )
+
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f"Поставка препара '{self.drug.name}'"
 
     @property
     def total(self) -> float:
@@ -96,3 +121,8 @@ class Stock(BaseModel):
         null=False,
         blank=False
     )
+
+    history = HistoricalRecords()
+    
+    def __str__(self):
+        return f"Наличие препарата '{self.drug.name}'"

@@ -53,7 +53,6 @@ class BaseModelMeta(models.base.ModelBase):
     def __new__(mcs, name, bases, namespace):
         cls = super().__new__(mcs, name, bases, namespace)
 
-        # Пропускаем абстрактные модели
         if cls._meta.abstract:
             return cls
 

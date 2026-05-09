@@ -3,6 +3,9 @@ from pathlib import Path
 
 from decouple import config
 
+from django.templatetags.static import static
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = config("SECRET_KEY")
@@ -11,17 +14,29 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
 
 INSTALLED_APPS = [
+    # admin
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.import_export",
+    "unfold.contrib.simple_history", 
+
+    # base
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     # third-party
     "rest_framework",
     "django_filters",
     "drf_spectacular",
     "corsheaders",
+    "import_export",        # ← добавить
+    "simple_history",
+    
     # local
     "common",
     "apps.users",
@@ -166,4 +181,14 @@ LOGGING = {
             "propagate": False,
         },
     },
+}
+
+UNFOLD = {
+    "SITE_TITLE": "ООО «Оптотека»",
+    "SITE_HEADER": "Система управления складом аптеки",
+    "SITE_ICON": {
+        "light": lambda request: static("img/pharmacy.png"),
+        "dark": lambda request: static("img/pharmacy.png")
+    },
+    "SITE_FAVICON": lambda request: static("img/pharmacy.png")
 }
