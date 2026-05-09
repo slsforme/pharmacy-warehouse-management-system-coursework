@@ -24,8 +24,13 @@ make-app:
 	poetry run python manage.py startapp $(NAME) apps/$(NAME)
 
 lint:
-	poetry run ruff check .
-	poetry run ruff format --check .
+	@mkdir -p logs
+	-poetry run ruff check . --output-format=json > logs/lint.json
+	-poetry run ruff format --check .
+	@echo "project linted succesfully. Log saved at: logs/lint.json"
 
 fix:
 	poetry run ruff check . --fix
+
+format:
+	poetry run ruff format .

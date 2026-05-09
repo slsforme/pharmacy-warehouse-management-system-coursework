@@ -1,11 +1,11 @@
-from django.conf import settings
 from django.db import models
+
 from common.models import BaseModel
 
 
 class Sale(BaseModel):
     cashier = models.ForeignKey(
-        to="users.User",               # ← было settings.AUTH_USER_MODEL
+        to="users.User",  # ← было settings.AUTH_USER_MODEL
         on_delete=models.PROTECT,
         verbose_name="Кассир",
     )
@@ -15,7 +15,7 @@ class Sale(BaseModel):
         db_index=True,
         auto_now_add=True,
     )
-    
+
     note = models.TextField(
         verbose_name="Примечание",
         blank=True,
