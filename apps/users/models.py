@@ -133,3 +133,5 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     @property
     def full_name(self) -> str:
         return f"{self.last_name} {self.first_name} {self.patronymic}".strip()
+    
+    full_name.fget.short_description = "Полное имя"  

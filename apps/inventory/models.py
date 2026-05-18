@@ -106,6 +106,8 @@ class ArrivalItem(BaseModel):
 
     @property
     def total(self) -> float:
+        if self.quantity is None or self.price is None:
+            return 0
         return self.quantity * self.price
 
 
