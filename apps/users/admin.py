@@ -58,7 +58,7 @@ class UserAdmin(UsersBaseAdmin, BaseUserAdmin):
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
 
-    list_display = ["email", "full_name", "role", "is_active", "is_staff"]
+    list_display = ["email", "get_full_name", "role", "get_is_active", "get_is_staff"]
     list_filter = ["role", "is_active", "is_staff"]
     search_fields = ["email", "first_name", "last_name"]
     ordering = ["email"]
@@ -76,3 +76,15 @@ class UserAdmin(UsersBaseAdmin, BaseUserAdmin):
             "fields": ("email", "first_name", "last_name", "role", "password1", "password2"),
         }),
     )
+
+    @admin.display(description="Полное имя")
+    def get_full_name(self, obj):
+        return obj.full_name
+
+    @admin.display(description="Активен", boolean=True)
+    def get_is_active(self, obj):
+        return obj.is_active
+
+    @admin.display(description="Сотрудник", boolean=True)
+    def get_is_staff(self, obj):
+        return obj.is_staff
