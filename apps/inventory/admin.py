@@ -1,9 +1,16 @@
+# apps/inventory/admin.py
 from django.contrib import admin
+from django.http import HttpResponse
+from django.urls import path
+from django.utils.html import format_html
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
+
+from apps.reports.generators import generate_invoice_docx, generate_invoice_pdf
+from apps.reports.selectors import get_arrival_for_invoice
 
 from .models import Arrival, ArrivalItem, Stock
 
@@ -16,7 +23,7 @@ class ArrivalItemInline(TabularInline):
     readonly_fields = ["get_total"]
 
     def get_total(self, obj):
-        return f"{obj.total:.2f} ₽"
+        return f"{obj.total:.2f} руб."
     get_total.short_description = "Сумма"
 
 
@@ -46,7 +53,7 @@ class InventoryBaseAdmin(ModelAdmin, ImportExportModelAdmin, SimpleHistoryAdmin)
 @admin.register(Arrival)
 class ArrivalAdmin(InventoryBaseAdmin):
     resource_class = ArrivalResource
-    list_display = ["document_number", "supplier", "document_date", "created_by", "created_at"]
+    list_display = ["document_number", "supplier", "document_date", "created_by", "invoice_actions", "created_at"]
     search_fields = ["document_number", "supplier__name"]
     list_filter = ["supplier", "document_date"]
     list_select_related = ["supplier", "created_by"]
@@ -59,6 +66,47 @@ class ArrivalAdmin(InventoryBaseAdmin):
         ("Примечание", {"fields": ("note",)}),
         ("Служебное", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
     )
+
+    def invoice_actions(self, obj):
+        return format_html(
+            '<a href="invoice/{}/pdf/" class="button">PDF</a> '
+            '<a href="invoice/{}/docx/" class="button">DOCX</a>',
+            obj.pk, obj.pk,
+        )
+    invoice_actions.short_description = "Счёт-фактура"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom = [
+            path(
+                "invoice/<int:arrival_id>/pdf/",
+                self.admin_site.admin_view(self.invoice_pdf),
+                name="invoice_pdf",
+            ),
+            path(
+                "invoice/<int:arrival_id>/docx/",
+                self.admin_site.admin_view(self.invoice_docx),
+                name="invoice_docx",
+            ),
+        ]
+        return custom + urls
+
+    def invoice_pdf(self, request, arrival_id):
+        data = get_arrival_for_invoice(arrival_id)
+        buf = generate_invoice_pdf(data)
+        r = HttpResponse(buf.getvalue(), content_type="application/pdf")
+        r["Content-Disposition"] = f'attachment; filename=invoice_{data["document_number"]}.pdf'
+        return r
+
+    def invoice_docx(self, request, arrival_id):
+        data = get_arrival_for_invoice(arrival_id)
+        buf = generate_invoice_docx(data)
+        r = HttpResponse(
+            buf.getvalue(),
+            content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        )
+        r["Content-Disposition"] = f'attachment; filename=invoice_{data["document_number"]}.docx'
+        return r
 
 
 @admin.register(ArrivalItem)
@@ -76,7 +124,7 @@ class ArrivalItemAdmin(InventoryBaseAdmin):
     )
 
     def get_total(self, obj):
-        return f"{obj.total:.2f} ₽"
+        return f"{obj.total:.2f} руб."
     get_total.short_description = "Сумма"
 
 

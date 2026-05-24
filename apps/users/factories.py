@@ -21,7 +21,14 @@ class UserFactory(DjangoModelFactory):
         model = User
         django_get_or_create = ["email"]
 
-    role = factory.Iterator(Role.objects.all())
+    role = factory.LazyFunction(
+        lambda: Role.objects.get_or_create(
+            name=Role.RoleType.PHARMACIST,
+            defaults={"can_manage_sales": True}
+        )[0]
+    )
+
+    role = factory.SubFactory(RoleFactory)
     email = factory.Sequence(lambda n: f"user{n}@pharmacy.ru")
     first_name = factory.LazyFunction(fake.first_name)
     last_name = factory.LazyFunction(fake.last_name)

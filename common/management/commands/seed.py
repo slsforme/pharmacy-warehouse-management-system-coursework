@@ -37,7 +37,6 @@ class Command(BaseCommand):
             Manufacturer.objects.all().delete()
             DrugGroup.objects.all().delete()
             User.objects.filter(is_superuser=False).delete()
-            Role.objects.all().delete()
             self.stdout.write("Models were deleted succesfully")
 
         for role in Role.RoleType:

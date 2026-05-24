@@ -34,3 +34,9 @@ fix:
 
 format:
 	poetry run ruff format .
+
+test:
+	poetry run pytest tests/test_all.py -v --tb=long --showlocals 
+
+test-cov:
+	poetry run pytest tests/test_all.py --cov=apps --cov-report=html

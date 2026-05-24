@@ -4,6 +4,7 @@ from pathlib import Path
 from decouple import config
 
 from django.templatetags.static import static
+from django.urls import reverse_lazy
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -34,7 +35,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_spectacular",
     "corsheaders",
-    "import_export",        # ← добавить
+    "import_export",
     "simple_history",
     
     # local
@@ -106,6 +107,10 @@ AUTH_USER_MODEL = "users.User"
 
 # localization
 LANGUAGE_CODE = "ru-ru"
+LANGUAGES = [
+    ("ru", "Русский"),
+    ("en", "English"),
+]
 TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_TZ = True
@@ -124,6 +129,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # drf
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -186,9 +192,17 @@ LOGGING = {
 UNFOLD = {
     "SITE_TITLE": "ООО «Оптотека»",
     "SITE_HEADER": "Система управления складом аптеки",
+    # "SITE_FAVICON": lambda request: static("img/favicon.ico"),
     "SITE_ICON": {
         "light": lambda request: static("img/pharmacy.png"),
-        "dark": lambda request: static("img/pharmacy.png")
+        "dark":  lambda request: static("img/pharmacy.png"),
     },
-    "SITE_FAVICON": lambda request: static("img/pharmacy.png")
+
+    "THEME": "dark",
+
+    "DASHBOARD_CALLBACK": "apps.reports.dashboard_callback.dashboard_callback",
+
+    "SIDEBAR": {
+        "show_search": True,
+    },
 }

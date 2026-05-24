@@ -66,7 +66,7 @@ class BaseModelMeta(models.base.ModelBase):
 class BaseModel(models.Model, metaclass=BaseModelMeta):
     created_at = models.DateTimeField(auto_now_add=True, editable=False, verbose_name="Время создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время последнего изменения")
-    uid = models.UUIDField(default=uuid.uuid4(), editable=False, unique=True)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     class Meta:
         abstract = True

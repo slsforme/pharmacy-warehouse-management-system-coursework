@@ -67,5 +67,5 @@ class DrugFactory(DjangoModelFactory):
         django_get_or_create = ["name"]
 
     name = factory.Sequence(lambda n: f"Препарат {n}")
-    manufacturer = factory.Iterator(Manufacturer.objects.all())
-    group = factory.Iterator(DrugGroup.objects.all())
+    group = factory.SubFactory(DrugGroupFactory)
+    manufacturer = factory.SubFactory(ManufacturerFactory)

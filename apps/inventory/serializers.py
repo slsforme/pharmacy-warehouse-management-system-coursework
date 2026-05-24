@@ -55,8 +55,11 @@ class ArrivalCreateSerializer(serializers.ModelSerializer):
             )
             for item_data in items_data:
                 ArrivalItem.objects.create(arrival=arrival, **item_data)
-                # Обновляем остатки
-                stock, _ = Stock.objects.get_or_create(drug=item_data["drug"])
+
+                stock, created = Stock.objects.get_or_create(
+                    drug=item_data["drug"],
+                    defaults={"quantity": 0},
+                )
                 stock.quantity += item_data["quantity"]
                 stock.save()
 

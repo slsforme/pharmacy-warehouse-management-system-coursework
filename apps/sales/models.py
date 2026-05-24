@@ -28,6 +28,9 @@ class Sale(BaseModel):
 
     history = HistoricalRecords()
 
+    def __str__(self):
+        return f"Чек № {self.uid}"
+
     @property
     def total(self) -> float:
         return sum(item.total for item in self.items.all())
@@ -66,4 +69,6 @@ class SaleItem(BaseModel):
 
     @property
     def total(self) -> float:
+        if self.quantity is None or self.price is None:
+            return 0
         return self.quantity * self.price

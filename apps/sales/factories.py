@@ -2,8 +2,7 @@ import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
-from apps.catalog.models import Drug
-
+from apps.catalog.factories import DrugFactory
 from .models import Sale, SaleItem
 
 fake = Faker("ru_RU")
@@ -23,7 +22,7 @@ class SaleItemFactory(DjangoModelFactory):
     class Meta:
         model = SaleItem
 
-    sale = factory.Iterator(Sale.objects.all())
-    drug = factory.Iterator(Drug.objects.all())
-    quantity = factory.Sequence(lambda n: n + 1)  # гарантированно > 0
-    price = factory.Sequence(lambda n: (n + 1) * 10)  # 10, 20, 30...
+    sale = factory.SubFactory(SaleFactory)
+    drug = factory.SubFactory(DrugFactory)
+    quantity = factory.Sequence(lambda n: n + 1)
+    price = factory.Sequence(lambda n: (n + 1) * 10)
